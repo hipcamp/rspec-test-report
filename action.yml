@@ -1,11 +1,10 @@
-name: 'Your name here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
+name: 'RSpec Test Report'
+description: 'Reports rspec test results.'
+author: 'Hipcamp'
 inputs:
-  milliseconds: # change this
+  paths:
     required: true
-    description: 'input description here'
-    default: 'default value if applicable'
+    description: 'the paths to find completed rspec test results'
 runs:
   using: 'node12'
   main: 'dist/index.js'
