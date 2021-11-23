@@ -1,15 +1,32 @@
 import * as core from '@actions/core'
+import {RSpecService} from './rspec.service'
+import {TestSuite} from './test-suite'
 
 async function run(): Promise<void> {
   try {
-    const ms: string = core.getInput('milliseconds')
-    core.debug(`Waiting ${ms} milliseconds ...`) // debug is only output if you set the secret `ACTIONS_STEP_DEBUG` to true
+    const paths: string[] = core.getInput('paths')
+      ? core.getInput('paths').split(' ')
+      : ['*.xml']
+    // const failOnError: boolean = core.getBooleanInput('fail-on-error')
+    const failOnError = true
 
-    core.debug(new Date().toTimeString())
-    await wait(parseInt(ms, 10))
-    core.debug(new Date().toTimeString())
+    const rspecService: RSpecService = new RSpecService(paths)
+    const report: TestSuite = rspecService.generateReport()
 
-    core.setOutput('time', new Date().toTimeString())
+    for (const testcase of report.failures) {
+      core.error(testcase.failure?.text as string, {
+        title: testcase.name,
+        file: testcase.file
+      })
+    }
+
+    if ((report.failures || report.errors) && failOnError) {
+      core.setFailed(
+        `There are ${
+          report.failures.length + report.errors
+        } failed test(s) in your test report.`
+      )
+    }
   } catch (error) {
     if (error instanceof Error) core.setFailed(error.message)
   }

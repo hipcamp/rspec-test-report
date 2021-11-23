@@ -5,6 +5,10 @@ inputs:
   paths:
     required: true
     description: 'the paths to find completed rspec test results'
+  fail-on-error:
+    description: 'set this action as failed if test report contains any failed tests'
+    required: true
+    default: 'true'
 runs:
   using: 'node12'
   main: 'dist/index.js'
