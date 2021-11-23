@@ -54,7 +54,7 @@ ${(_a = testcase.failure) === null || _a === void 0 ? void 0 : _a.text}`, {
                     file: testcase.file
                 });
             }
-            if ((report.failures || report.errors) && failOnError) {
+            if (report.failures.length + report.errors > 0 && failOnError) {
                 core.setFailed(`There are ${report.failures.length + report.errors} failed test(s) in your test report.`);
             }
         }

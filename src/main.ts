@@ -23,7 +23,7 @@ ${testcase.failure?.text}`,
       )
     }
 
-    if ((report.failures || report.errors) && failOnError) {
+    if (report.failures.length + report.errors > 0 && failOnError) {
       core.setFailed(
         `There are ${
           report.failures.length + report.errors
