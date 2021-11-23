@@ -44,12 +44,14 @@ function run() {
             const paths = core.getInput('paths')
                 ? core.getInput('paths').split(' ')
                 : ['*.xml'];
-            // const failOnError: boolean = core.getBooleanInput('fail-on-error')
-            const failOnError = true;
+            const failOnError = core.getBooleanInput('fail-on-error');
             const rspecService = new rspec_service_1.RSpecService(paths);
             const report = rspecService.generateReport();
             for (const testcase of report.failures) {
-                core.error((_a = testcase.failure) === null || _a === void 0 ? void 0 : _a.text, {
+                core.error(`
+        FILE: ${testcase.file}
+        ${(_a = testcase.failure) === null || _a === void 0 ? void 0 : _a.text}
+        `, {
                     title: testcase.name,
                     file: testcase.file
                 });
@@ -129,6 +131,10 @@ class RSpecService {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const allTestscases = data.testcase.map((x) => {
             x.time = +x.time;
+            if (x.failure) {
+                // eslint-disable-next-line no-undef
+                x.failure.text = new DOMParser().parseFromString(x.failure.text, 'text/html').documentElement.textContent;
+            }
             return x;
         });
         delete data.testcase;

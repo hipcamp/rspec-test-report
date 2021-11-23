@@ -7,17 +7,22 @@ async function run(): Promise<void> {
     const paths: string[] = core.getInput('paths')
       ? core.getInput('paths').split(' ')
       : ['*.xml']
-    // const failOnError: boolean = core.getBooleanInput('fail-on-error')
-    const failOnError = true
+    const failOnError: boolean = core.getBooleanInput('fail-on-error')
 
     const rspecService: RSpecService = new RSpecService(paths)
     const report: TestSuite = rspecService.generateReport()
 
     for (const testcase of report.failures) {
-      core.error(testcase.failure?.text as string, {
-        title: testcase.name,
-        file: testcase.file
-      })
+      core.error(
+        `
+        FILE: ${testcase.file}
+        ${testcase.failure?.text}
+        `,
+        {
+          title: testcase.name,
+          file: testcase.file
+        }
+      )
     }
 
     if ((report.failures || report.errors) && failOnError) {

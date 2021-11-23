@@ -39,6 +39,13 @@ export class RSpecService {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const allTestscases: TestCase[] = data.testcase.map((x: any) => {
       x.time = +x.time
+      if (x.failure) {
+        // eslint-disable-next-line no-undef
+        x.failure.text = new DOMParser().parseFromString(
+          x.failure.text,
+          'text/html'
+        ).documentElement.textContent
+      }
       return x
     })
     delete data.testcase
