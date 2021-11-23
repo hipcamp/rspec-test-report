@@ -4,8 +4,8 @@ import * as fs from 'fs'
 import * as glob from 'glob'
 import * as path from 'path'
 import {TestCase, TestSuite} from './test-suite'
+import {JSDOM} from 'jsdom'
 import {XMLParser} from 'fast-xml-parser'
-
 export class RSpecService {
   private readonly paths: string[]
 
@@ -40,11 +40,7 @@ export class RSpecService {
     const allTestscases: TestCase[] = data.testcase.map((x: any) => {
       x.time = +x.time
       if (x.failure) {
-        // eslint-disable-next-line no-undef
-        x.failure.text = new DOMParser().parseFromString(
-          x.failure.text,
-          'text/html'
-        ).documentElement.textContent
+        x.failure.text = new JSDOM(x.failure.text).window.document.textContent
       }
       return x
     })
