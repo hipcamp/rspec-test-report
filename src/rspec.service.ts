@@ -4,13 +4,34 @@ import * as fs from 'fs'
 import * as glob from 'glob'
 import * as path from 'path'
 import {TestCase, TestSuite} from './test-suite'
-import {JSDOM} from 'jsdom'
 import {XMLParser} from 'fast-xml-parser'
 export class RSpecService {
   private readonly paths: string[]
 
   constructor(paths: string[]) {
     this.paths = paths
+  }
+
+  private decodeHTML(text: string): string {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const entities: any = {
+      amp: '&',
+      apos: "'",
+      lt: '<',
+      gt: '>',
+      quot: '"',
+      nbsp: '\xa0'
+    }
+    const entityPattern = /&([a-z]+);/gi
+
+    return text.replace(entityPattern, function (match, entity) {
+      entity = entity.toLowerCase()
+      if (entities.hasOwnProperty(entity)) {
+        return entities[entity]
+      }
+      // return original string if there is no matching entity (no replace)
+      return match
+    })
   }
 
   private getRSpecFilePaths(): string[] {
@@ -40,7 +61,7 @@ export class RSpecService {
     const allTestscases: TestCase[] = data.testcase.map((x: any) => {
       x.time = +x.time
       if (x.failure) {
-        x.failure.text = new JSDOM(x.failure.text).window.document.textContent
+        x.failure.text = this.decodeHTML(x.failure.text)
       }
       return x
     })
