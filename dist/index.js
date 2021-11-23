@@ -48,10 +48,8 @@ function run() {
             const rspecService = new rspec_service_1.RSpecService(paths);
             const report = rspecService.generateReport();
             for (const testcase of report.failures) {
-                core.error(`
-        FILE: ${testcase.file}
-        ${(_a = testcase.failure) === null || _a === void 0 ? void 0 : _a.text}
-        `, {
+                core.error(`FILE: ${testcase.file}
+${(_a = testcase.failure) === null || _a === void 0 ? void 0 : _a.text}`, {
                     title: testcase.name,
                     file: testcase.file
                 });

@@ -14,10 +14,8 @@ async function run(): Promise<void> {
 
     for (const testcase of report.failures) {
       core.error(
-        `
-        FILE: ${testcase.file}
-        ${testcase.failure?.text}
-        `,
+        `FILE: ${testcase.file}
+${testcase.failure?.text}`,
         {
           title: testcase.name,
           file: testcase.file
