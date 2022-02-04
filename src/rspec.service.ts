@@ -44,14 +44,16 @@ export class RSpecService {
   }
 
   private parseRSpecFile(filepath: string): TestSuite {
-    core.debug(`Parsing File: ${filepath}`)
+    core.info(`Parsing File: ${filepath}`)
     const options = {
       ignoreAttributes: false,
       attributeNamePrefix: '',
       textNodeName: 'text'
     }
     const parser: XMLParser = new XMLParser(options)
-    const data = parser.parse(fs.readFileSync(filepath))['testsuite']
+    const response = parser.parse(fs.readFileSync(filepath))
+    core.info(response)
+    const data = response['testsuite']
     data.errors = +data.errors
     data.skipped = +data.skipped
     data.tests = +data.tests
