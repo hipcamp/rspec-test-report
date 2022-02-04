@@ -134,14 +134,16 @@ class RSpecService {
         return [...new Set(filePaths)];
     }
     parseRSpecFile(filepath) {
-        core.debug(`Parsing File: ${filepath}`);
+        core.info(`Parsing File: ${filepath}`);
         const options = {
             ignoreAttributes: false,
             attributeNamePrefix: '',
             textNodeName: 'text'
         };
         const parser = new fast_xml_parser_1.XMLParser(options);
-        const data = parser.parse(fs.readFileSync(filepath))['testsuite'];
+        const response = parser.parse(fs.readFileSync(filepath));
+        core.info(response);
+        const data = response['testsuite'];
         data.errors = +data.errors;
         data.skipped = +data.skipped;
         data.tests = +data.tests;
