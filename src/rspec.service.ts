@@ -52,6 +52,7 @@ export class RSpecService {
     }
     const parser: XMLParser = new XMLParser(options)
     const response = parser.parse(fs.readFileSync(filepath))
+    core.info('Made it here.')
     const data = response['testsuite']
     data.errors = +data.errors
     data.skipped = +data.skipped
