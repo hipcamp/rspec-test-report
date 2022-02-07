@@ -142,7 +142,6 @@ class RSpecService {
         };
         const parser = new fast_xml_parser_1.XMLParser(options);
         const response = parser.parse(fs.readFileSync(filepath));
-        core.info(response);
         const data = response['testsuite'];
         data.errors = +data.errors;
         data.skipped = +data.skipped;
